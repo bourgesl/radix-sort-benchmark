@@ -49,7 +49,12 @@ import java.util.Arrays; // TODO
  * @since 1.7 * 14
  */
 public final class DualPivotQuicksort20210424 {
+    
+    private final static boolean TRACE = false;
 
+    private final static boolean DPQS_ENABLE_RADIX = true;
+    private final static boolean DPQS_USE_RADIX_2 = true;
+    
     public static void sortStd(final int[] A) {
         sortStd(A, 0, A.length - 1);
     }
@@ -66,7 +71,7 @@ public final class DualPivotQuicksort20210424 {
     public final static Sorter SORTER = new Sorter();
 
     public static void sortNoAlloc(final int[] A) {
-        sortStd(A, 0, A.length - 1);
+        sortNoAlloc(A, 0, A.length - 1);
     }
 
     public static void sortNoAlloc(final int[] A, final int low, final int high) {
@@ -79,7 +84,36 @@ public final class DualPivotQuicksort20210424 {
             sort(sorter, A, 0, low, high + 1); // exclusive
         }
     }
-    
+
+    public static void sortRadix(final int[] A) {
+        sortRadix(A, 0, A.length - 1);
+    }
+
+    public static void sortRadix(final int[] A, final int low, final int high) {
+        final Sorter sorter = SORTER;
+        // avoid parallelism on sorter state:
+        synchronized(sorter) {
+            // preallocation of temporary arrays into custom Sorter class
+            sorter.initBuffers(high - low + 1);
+
+            radixSort(sorter, A, low, high + 1); // exclusive
+        }
+    }
+
+    public static void sortRadix2(final int[] A) {
+        sortRadix2(A, 0, A.length - 1);
+    }
+
+    public static void sortRadix2(final int[] A, final int low, final int high) {
+        final Sorter sorter = SORTER;
+        // avoid parallelism on sorter state:
+        synchronized(sorter) {
+            // preallocation of temporary arrays into custom Sorter class
+            sorter.initBuffers(high - low + 1);
+
+            radixSort2(sorter, A, low, high + 1); // exclusive
+        }
+    }    
     /**
      * Prevents instantiation.
      */
@@ -166,6 +200,10 @@ public final class DualPivotQuicksort20210424 {
      */
     private static void sort(Sorter sorter, int[] a, int bits, int low, int high) {
         while (true) {
+            if (TRACE) {
+                System.out.println("DPQSsort[" + a.length + "] bits = " + bits + " in [" + low + " - " + high + "]");
+            }
+            
             int end = high - 1, size = high - low;
 
             /*
@@ -262,10 +300,16 @@ public final class DualPivotQuicksort20210424 {
              */
             if (a[e1] < a[e2] && a[e2] < a[e3] && a[e3] < a[e4] && a[e4] < a[e5]) {
 
-                // TODD add comment
-                if ((bits > DELTA4 /* || sorter == null*/) && size > RADIX_MIN_SIZE) {
-                    radixSort(sorter, a, low, high);
-                    return;
+                if (DPQS_ENABLE_RADIX) {
+                    // TODD add comment
+                    if ((bits > DELTA4 /* || sorter == null*/) && size > RADIX_MIN_SIZE) {
+                        if (DPQS_USE_RADIX_2) {
+                            radixSort2(sorter, a, low, high);
+                        } else {
+                            radixSort(sorter, a, low, high);
+                        }
+                        return;
+                    }
                 }
 
                 /*
@@ -448,6 +492,9 @@ public final class DualPivotQuicksort20210424 {
      * @param high the index of the last element, exclusive, to be sorted
      */
     private static void mixedInsertionSort(int[] a, int low, int end, int high) {
+        if (TRACE) {
+            System.out.println("mixedInsertionSort[" + a.length + "] in [" + low + " - " + high + "]");
+        }
         if (end == high) {
 
             /*
@@ -561,6 +608,9 @@ public final class DualPivotQuicksort20210424 {
      * @param high the index of the last element, exclusive, to be sorted
      */
     private static void insertionSort(int[] a, int low, int high) {
+        if (TRACE) {
+            System.out.println("insertionSort[" + a.length + "] in [" + low + " - " + high + "]");
+        }
         for (int i, k = low; ++k < high; ) {
             int ai = a[i = k];
 
@@ -573,8 +623,143 @@ public final class DualPivotQuicksort20210424 {
         }
     }
 
+
+    // TODO add javadoc
+    private static void radixSort2(final Sorter sorter, final int[] a, final int low, final int high) {
+        if (TRACE) {
+            System.out.println("radixSort2[" + a.length + "] in [" + low + " - " + high + "]");
+        }
+        int[] b;
+        // LBO: prealloc (high - low) +1 element:
+        if (sorter == null || (b = sorter.b) == null || b.length < (high - low)) {
+            // System.out.println("alloc b: " + (high - low));
+            b = new int[high - low];
+        }
+
+        final int[] count1;
+        final int[] count2;
+        final int[] count3;
+        final int[] count4;
+
+        if (sorter != null) {
+            sorter.resetRadixBuffers();
+            count1 = sorter.count1;
+            count2 = sorter.count2;
+            count3 = sorter.count3;
+            count4 = sorter.count4;
+        } else {
+            // System.out.println("alloc radix buffers(4x256)");
+            count1 = new int[256];
+            count2 = new int[256];
+            count3 = new int[256];
+            count4 = new int[256];
+        }
+
+        for (int i = low; i < high; ++i) {
+            --count1[a[i] & 0xFF];
+            --count2[(a[i] >>> 8) & 0xFF];
+            --count3[(a[i] >>> 16) & 0xFF];
+            --count4[(a[i] >>> 24) ^ 0x80];
+        }
+
+        final int total = low - high;
+        final boolean skipLevel4 = canSkipLevel2(count4, total);
+        final boolean skipLevel3 = canSkipLevel2(count3, total);
+        final boolean skipLevel2 = canSkipLevel2(count2, total);
+        final boolean skipLevel1 = canSkipLevel2(count1, total);
+
+        if (skipLevel1 && skipLevel2 && skipLevel3 && skipLevel4) {
+            // all equal:
+            return;
+        }
+
+        count1[255] += high;
+        count2[255] += high;
+        count3[255] += high;
+        count4[255] += high;
+
+        int[] source = a;
+        int[] dest = b;
+
+        if (!skipLevel1) {
+            // 1 todo process LSD
+            for (int i = 255; i > 0; --i) {
+                count1[i - 1] += count1[i];
+            }
+
+            for (int i = low; i < high; ++i) {
+                dest[count1[source[i] & 0xFF]++] = source[i];
+            }
+            if (!skipLevel2 || !skipLevel3 || !skipLevel4) {
+                final int[] tmp = dest;
+                dest = source;
+                source = tmp;
+            }
+        }
+
+        if (!skipLevel2) {
+            // 2
+            for (int i = 255; i > 0; --i) {
+                count2[i - 1] += count2[i];
+            }
+
+            for (int i = low; i < high; ++i) {
+                dest[count2[(source[i] >> 8) & 0xFF]++] = source[i];
+            }
+            if (!skipLevel3 || !skipLevel4) {
+                final int[] tmp = dest;
+                dest = source;
+                source = tmp;
+            }
+        }
+
+        if (!skipLevel3) {
+            // 3
+            for (int i = 255; i > 0; --i) {
+                count3[i - 1] += count3[i];
+            }
+
+            for (int i = low; i < high; ++i) {
+                dest[count3[(source[i] >> 16) & 0xFF]++] = source[i];
+            }
+            if (!skipLevel4) {
+                final int[] tmp = dest;
+                dest = source;
+                source = tmp;
+            }
+        }
+
+        if (!skipLevel4) {
+            // 4
+            for (int i = 255; i > 0; --i) {
+                count4[i - 1] += count4[i];
+            }
+
+            for (int i = low; i < high; ++i) {
+                dest[count4[(source[i] >>> 24) ^ 0x80]++] = source[i];
+            }
+        }
+        if (dest != a) {
+            System.arraycopy(dest, low, a, low, high - low);
+        }
+    }
+
+    // TODO: add javadoc
+    private static boolean canSkipLevel2(final int[] count, final int total) {
+        for (int i = 0, c; i < count.length; ++i) {
+            c = count[i];
+            if (c == total) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     // TODO add javadoc
     private static void radixSort(Sorter sorter, int[] a, int low, int high) {
+        if (TRACE) {
+            System.out.println("radixSort[" + a.length + "] in [" + low + " - " + high + "]");
+        }
         int[] b;
         // LBO: prealloc (high - low) +1 element:
         if (sorter == null || (b = sorter.b) == null || b.length < (high - low)) {
@@ -687,6 +872,9 @@ public final class DualPivotQuicksort20210424 {
      * @param high the index of the last element, exclusive, to be sorted
      */
     private static void heapSort(int[] a, int low, int high) {
+        if (TRACE) {
+            System.out.println("heapSort[" + a.length + "] in [" + low + " - " + high + "]");
+        }
         for (int k = (low + high) >>> 1; k > low; ) {
             pushDown(a, --k, a[k], low, high);
         }
@@ -733,7 +921,9 @@ public final class DualPivotQuicksort20210424 {
      * @return true if finally sorted, false otherwise
      */
     private static boolean tryMergeRuns(Sorter sorter, int[] a, int low, int size) {
-
+        if (TRACE) {
+            System.out.println("tryMergeRuns[" + a.length + "] in [" + low + " - " + (low + size) + "]");
+        }
         /*
          * The run array is constructed only if initial runs are
          * long enough to continue, run[i] then holds start index
@@ -865,6 +1055,10 @@ public final class DualPivotQuicksort20210424 {
      */
     private static int[] mergeRuns(int[] a, int[] b, int offset,
             int aim, /*boolean parallel,*/ int[] run, int lo, int hi) {
+        
+        if (TRACE) {
+            System.out.println("mergeRuns[" + a.length + "] offset: "+offset+" in [" + lo + " - " + hi + "]");
+        }
 
         if (hi - lo == 1) {
             if (aim >= 0) {
@@ -929,6 +1123,10 @@ public final class DualPivotQuicksort20210424 {
      */
     private static void mergeParts(/*Merger merger,*/int[] dst, int k,
             int[] a1, int lo1, int hi1, int[] a2, int lo2, int hi2) {
+        
+        if (TRACE) {
+            System.out.println("mergeParts[" + dst.length + "] in [" + lo1 + " - " + hi1 + "] and  [" + lo2 + " - " + hi2 + "]");
+        }
         // ...
         /*
          * Merge small parts sequentially.
@@ -970,7 +1168,6 @@ public final class DualPivotQuicksort20210424 {
             }
             runInit = true;
         }
-        
         void resetRadixBuffers() {
             Arrays.fill(count1, 0);
             Arrays.fill(count2, 0);
