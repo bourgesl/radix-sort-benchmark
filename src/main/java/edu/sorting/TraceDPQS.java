@@ -17,9 +17,9 @@ public class TraceDPQS {
 
     public static void main(String[] args) {
 
-        testRandom(Impl.DPQS_RADIX_2);
+        // testRandom(Impl.DPQS_RADIX_2);
         testRandom(Impl.DPQS);
-        testRandom(Impl.DPQS_NoAlloc);
+        // testRandom(Impl.DPQS_NoAlloc);
     }
 
     public static void testRandom(Impl impl) {

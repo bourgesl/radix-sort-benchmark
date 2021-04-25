@@ -53,7 +53,7 @@ public final class DualPivotQuicksort20210424 {
     private final static boolean TRACE = false;
 
     private final static boolean DPQS_ENABLE_RADIX = true;
-    private final static boolean DPQS_USE_RADIX_2 = true;
+    private final static boolean DPQS_USE_RADIX_2 = true; // false is buggy on indices (low - high) (a/b swaps)
     
     public static void sortStd(final int[] A) {
         sortStd(A, 0, A.length - 1);

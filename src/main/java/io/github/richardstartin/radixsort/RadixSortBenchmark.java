@@ -108,13 +108,13 @@ public class RadixSortBenchmark {
         return data;
     }
 
-    /*  @Benchmark */
+    @Benchmark
     public int[] arraysSort() {
         Arrays.sort(data);
         return data;
     }
 
-    /*  @Benchmark */
+    @Benchmark
     public int[] dpqs21_04Sort() {
         DualPivotQuicksort20210424.sortStd(data);
         return data;
@@ -126,7 +126,7 @@ public class RadixSortBenchmark {
         return data;
     }
 
-    @Benchmark
+    /*  @Benchmark */
     public int[] dpqs21_04RadixSort() {
         DualPivotQuicksort20210424.sortRadix(data);
         return data;
