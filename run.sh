@@ -15,8 +15,8 @@ WTIME=1s
 ITER=5
 TIME=2s
 
-OPTS="-p size=$SIZES -p bits=23"
-# bits=17,23
+OPTS="-p size=$SIZES -p bits=17,30"
+# bits=17,23,30
 
 echo "OPTS: $OPTS"
 
