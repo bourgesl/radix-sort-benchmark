@@ -1,5 +1,6 @@
 package io.github.richardstartin.radixsort;
 
+import edu.sorting.DualPivotQuickSort2011;
 import edu.sorting.DualPivotQuicksort20210424;
 import java.util.Arrays;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -115,6 +116,12 @@ public class RadixSortBenchmark {
     }
 
     @Benchmark
+    public int[] dpqs11Sort() {
+        DualPivotQuickSort2011.sortNoAlloc(data);
+        return data;
+    }
+
+    /* @Benchmark */
     public int[] dpqs21_04Sort() {
         DualPivotQuicksort20210424.sortStd(data);
         return data;

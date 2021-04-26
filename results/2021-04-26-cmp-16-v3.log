@@ -1,0 +1,48 @@
+# Run complete. Total time: 00:09:16
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                                                      (bits)  (padding)          (scenario)  (seed)   (size)   Mode  Cnt     Score    Error  Units
+RadixSortBenchmark.arraysSort                                      23          7             UNIFORM       0  1000000  thrpt    5     8,895 ±  0,079  ops/s
+RadixSortBenchmark.arraysSort                                      23          7          CONTIGUOUS       0  1000000  thrpt    5  2072,125 ± 24,234  ops/s
+RadixSortBenchmark.arraysSort                                      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   798,089 ±  4,562  ops/s
+RadixSortBenchmark.arraysSort                                      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    60,534 ±  0,879  ops/s
+RadixSortBenchmark.arraysSort                                      23          7              SORTED       0  1000000  thrpt    5    16,663 ±  0,211  ops/s
+RadixSortBenchmark.arraysSort                                      23          7       ALMOST_SORTED       0  1000000  thrpt    5    13,193 ±  0,121  ops/s
+RadixSortBenchmark.arraysSort                                      23          7                 EXP       0  1000000  thrpt    5    10,289 ±  0,075  ops/s
+
+RadixSortBenchmark.dpqs11Sort                                      23          7             UNIFORM       0  1000000  thrpt    5     7,543 ±  0,068  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7          CONTIGUOUS       0  1000000  thrpt    5  1572,108 ± 12,283  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   708,872 ±  4,675  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5   788,223 ±  6,091  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7              SORTED       0  1000000  thrpt    5    10,635 ±  0,037  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7       ALMOST_SORTED       0  1000000  thrpt    5    10,632 ±  0,294  ops/s
+RadixSortBenchmark.dpqs11Sort                                      23          7                 EXP       0  1000000  thrpt    5     8,838 ±  0,013  ops/s
+
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7             UNIFORM       0  1000000  thrpt    5    29,860 ±  0,373  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7          CONTIGUOUS       0  1000000  thrpt    5  1565,212 ±  8,752  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   624,893 ±  4,812  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    57,068 ±  0,141  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7              SORTED       0  1000000  thrpt    5    17,128 ±  0,103  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7       ALMOST_SORTED       0  1000000  thrpt    5    41,264 ±  0,424  ops/s
+RadixSortBenchmark.dpqs21_04NoAllocSort                            23          7                 EXP       0  1000000  thrpt    5    29,175 ±  0,361  ops/s
+
+RadixSortBenchmark.dpqs21_04Sort                                   23          7             UNIFORM       0  1000000  thrpt    5    29,532 ±  0,415  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7          CONTIGUOUS       0  1000000  thrpt    5  1038,189 ± 13,664  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   515,309 ±  8,286  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    55,695 ±  1,319  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7              SORTED       0  1000000  thrpt    5    17,024 ±  0,147  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7       ALMOST_SORTED       0  1000000  thrpt    5    40,689 ±  0,844  ops/s
+RadixSortBenchmark.dpqs21_04Sort                                   23          7                 EXP       0  1000000  thrpt    5    28,996 ±  0,479  ops/s
+
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7             UNIFORM       0  1000000  thrpt    5    81,088 ±  2,561  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7          CONTIGUOUS       0  1000000  thrpt    5    24,604 ±  0,095  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5    24,582 ±  0,299  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    24,420 ±  0,197  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7              SORTED       0  1000000  thrpt    5    80,383 ±  2,264  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7       ALMOST_SORTED       0  1000000  thrpt    5    81,329 ±  1,124  ops/s
+RadixSortBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7                 EXP       0  1000000  thrpt    5    73,525 ±  1,155  ops/s

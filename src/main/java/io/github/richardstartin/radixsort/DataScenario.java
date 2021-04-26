@@ -1,12 +1,11 @@
 package io.github.richardstartin.radixsort;
 
-import java.util.Arrays;
 import java.util.SplittableRandom;
 
 public enum DataScenario {
   UNIFORM {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       SplittableRandom random = new SplittableRandom(seed);
       int[] data = new int[size];
       for (int i = 0; i < data.length; ++i) {
@@ -17,7 +16,7 @@ public enum DataScenario {
   },
   CONTIGUOUS {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       int[] data = new int[size];
       for (int i = 0; i < data.length; ++i) {
         data[i] = i & mask;
@@ -27,7 +26,7 @@ public enum DataScenario {
   },
   CONTIGUOUS_REVERSE {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       int[] data = new int[size];
       for (int i = 0; i < size; ++i) {
         data[i] = size - i;
@@ -37,7 +36,7 @@ public enum DataScenario {
   },
   ALMOST_CONTIGUOUS {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       int[] data = new int[size];
       for (int i = 0; i < data.length; ++i) {
         data[i] = (i ^ 0xFF) & mask;
@@ -47,7 +46,7 @@ public enum DataScenario {
   },
   SORTED {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       SplittableRandom random = new SplittableRandom(seed);
       int[] data = new int[size];
       int x = (int) (Math.log(random.nextDouble())/Math.log(0.999)) + 1;
@@ -60,7 +59,7 @@ public enum DataScenario {
   },
   ALMOST_SORTED {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       int[] data = new int[size];
       SplittableRandom random = new SplittableRandom(seed);
       int x = (int) (Math.log(random.nextDouble())/Math.log(0.999)) + 1;
@@ -73,7 +72,7 @@ public enum DataScenario {
   },
   EXP {
     @Override
-    int[] generate(int size, int seed, int mask) {
+    public int[] generate(int size, int seed, int mask) {
       SplittableRandom random = new SplittableRandom(seed);
       int[] data = new int[size];
       for (int i = 0; i < data.length; ++i) {
@@ -84,5 +83,5 @@ public enum DataScenario {
     }
   },
   ;
-  abstract int[] generate(int size, int seed, int mask);
+  public abstract int[] generate(int size, int seed, int mask);
 }
