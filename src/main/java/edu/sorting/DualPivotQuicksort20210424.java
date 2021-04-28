@@ -54,7 +54,7 @@ public final class DualPivotQuicksort20210424 {
 
     private final static boolean DPQS_ENABLE_RADIX = true;
     private final static boolean DPQS_USE_RADIX_FOR_SEQUENTIAL = true;
-    private final static boolean DPQS_USE_RADIX_2 = true;
+    private final static boolean DPQS_USE_RADIX_2 = false;
 
     public static void sortStd(final int[] A) {
         sortStd(A, 0, A.length - 1);
@@ -139,7 +139,7 @@ public final class DualPivotQuicksort20210424 {
     }
 
     /*
-    From Vladimir's 2021.04.23 source code:
+    From Vladimir's 2021.04.28 source code:
      */
 
     /**
@@ -305,7 +305,7 @@ public final class DualPivotQuicksort20210424 {
                 if (DPQS_ENABLE_RADIX) {
                     // TODD add comment
                     // LBO: use radixSort for sequential sort (no parallelism):
-                    if ((DPQS_USE_RADIX_FOR_SEQUENTIAL /* || sorter == null*/ || (bits > DELTA4)) && (size > RADIX_MIN_SIZE)) {
+                    if ((DPQS_USE_RADIX_FOR_SEQUENTIAL /* || sorter == null*/ || (bits > DELTA4)) && size > RADIX_MIN_SIZE) {
                         if (DPQS_USE_RADIX_2) {
                             radixSort2(sorter, a, low, high);
                         } else {
@@ -651,20 +651,19 @@ public final class DualPivotQuicksort20210424 {
         }
 
         for (int i = low; i < high; ++i) {
-            count1[ a[i]         & 0xFF ]--;
-            count2[(a[i] >>>  8) & 0xFF ]--;
-            count3[(a[i] >>> 16) & 0xFF ]--;
-            count4[(a[i] >>> 24) ^ 0x80 ]--;
+            count1[ a[i]         & 0xFF]--;
+            count2[(a[i] >>>  8) & 0xFF]--;
+            count3[(a[i] >>> 16) & 0xFF]--;
+            count4[(a[i] >>> 24) ^ 0x80]--;
         }
-        boolean skipByte4 = skipByte(count4, low - high, high, true);
-        boolean skipByte3 = skipByte(count3, low - high, high, skipByte4);
-        boolean skipByte2 = skipByte(count2, low - high, high, skipByte3);
-        boolean skipByte1 = skipByte(count1, low - high, high, skipByte2);
+        boolean passLevel1 = passLevel(count1, low - high, high);
+        boolean passLevel2 = passLevel(count2, low - high, high);
+        boolean passLevel3 = passLevel(count3, low - high, high);
+        boolean passLevel4 = passLevel(count4, low - high, high);
 
-        if (skipByte1) {
+        if (!passLevel1 && !passLevel2 && !passLevel3 && !passLevel4) {
             return;
         }
-
         int[] b; int offset = low;
 
         // LBO: prealloc (high - low) +1 element:
@@ -673,58 +672,71 @@ public final class DualPivotQuicksort20210424 {
             b = new int[high - low];
         } else {
             offset = sorter.offset;
-//System.out.println("      offset: " + offset);
         }
-        final int start = low - offset;
-        final int last = high - offset;
-
-
+        int start = low - offset;
+        int last = high - offset;
+        
         // 1 todo process LSD
-        for (int i = low; i < high; ++i) {
-            b[count1[a[i] & 0xFF]++ - offset] = a[i];
-        }
-
-        if (skipByte2) {
-            System.arraycopy(b, start, a, low, high - low);
-            return;
+        if (passLevel1) {
+            for (int i = low; i < high; ++i) {
+                b[count1[a[i] & 0xFF]++ - offset] = a[i];
+            }
         }
 
         // 2
-        for (int i = start; i < last; ++i) {
-            a[count2[(b[i] >> 8) & 0xFF]++] = b[i];
-        }
-
-        if (skipByte3) {
-            return;
+        if (passLevel2) {
+            if (passLevel1) {
+                for (int i = start; i < last; ++i) {
+                    a[count2[(b[i] >> 8) & 0xFF]++] = b[i];
+                }
+            } else {
+                for (int i = low; i < high; ++i) {
+                    b[count2[(a[i] >> 8) & 0xFF]++ - offset] = a[i];
+                }
+            }
         }
 
         // 3
-        for (int i = low; i < high; ++i) {
-            b[count3[(a[i] >> 16) & 0xFF]++ - offset] = a[i];
-        }
-
-        if (skipByte4) {
-            System.arraycopy(b, start, a, low, high - low);
-            return;
+        if (passLevel3) {
+            if (passLevel1 ^ passLevel2) {
+                for (int i = start; i < last; ++i) {
+                    a[count3[(b[i] >> 16) & 0xFF]++] = b[i];
+                }
+            } else {
+                for (int i = low; i < high; ++i) {
+                    b[count3[(a[i] >> 16) & 0xFF]++ - offset] = a[i];
+                }
+            }
         }
 
         // 4
-        for (int i = start; i < last; ++i) {
-            a[count4[(b[i] >>> 24) ^ 0x80]++] = b[i];
+        if (passLevel4) {
+            if (passLevel1 ^ passLevel2 ^ passLevel3) {
+                for (int i = start; i < last; ++i) {
+                    a[count4[(b[i] >>> 24) ^ 0x80]++] = b[i];
+                }
+            } else {
+                for (int i = low; i < high; ++i) {
+                    b[count4[(a[i] >>> 24) ^ 0x80]++ - offset] = a[i];
+                }
+            }
+        }
+
+        if (passLevel1 ^ passLevel2 ^ passLevel3 ^ passLevel4) {
+            System.arraycopy(b, low - offset, a, low, high - low);
         }
     }
 
     // TODO: add javadoc
-    private static boolean skipByte(final int[] count, final int total, final int high, final boolean prevSkip) {
-        if (prevSkip) {
-            for (int i = 0; i < count.length; ++i) {
-                if (count[i] != 0) {
-                    if (count[i] == total) {
-                        return true;
-                    }
-                    break;
-                }
+    private static boolean passLevel(int[] count, int total, int high) {
+        for (int c : count) {
+            if (c == 0) {
+                continue;
             }
+            if (c == total) {
+                return false;
+            }
+            break;
         }
         // todo create historgam
         count[255] += high;
@@ -732,7 +744,7 @@ public final class DualPivotQuicksort20210424 {
         for (int i = 255; i > 0; --i) {
             count[i - 1] += count[i];
         }
-        return false;
+        return true;
     }
 
     // LBO variant:
@@ -973,7 +985,6 @@ public final class DualPivotQuicksort20210424 {
                 sorter.runInit = false; // LBO
 
                 if (k == high) {
-
                     /*
                      * The array is monotonous sequence,
                      * and therefore already sorted.
@@ -982,7 +993,6 @@ public final class DualPivotQuicksort20210424 {
                 }
 
                 if (k - low < MIN_FIRST_RUN_SIZE) {
-
                     /*
                      * The first run is too small
                      * to proceed with scanning.
@@ -995,10 +1005,9 @@ public final class DualPivotQuicksort20210424 {
                 run = sorter.run; // LBO: prealloc
                 run[0] = low;
 
-            } else if (a[last - 1] > a[last]) {
+            } else if (a[last - 1] > a[last]) { // Can't join with previous run
 
                 if (count > (k - low) >> MIN_FIRST_RUNS_FACTOR) {
-
                     /*
                      * The first runs are not long
                      * enough to continue scanning.
@@ -1007,15 +1016,13 @@ public final class DualPivotQuicksort20210424 {
                 }
 
                 if (++count == MAX_RUN_CAPACITY) {
-
                     /*
                      * Array is not highly structured.
                      */
                     return false;
                 }
 
-                if (false && count == run.length) {
-
+                if (false && count == run.length) { // LBO: prealloc
                     /*
                      * Increase capacity of index array.
                      */
@@ -1023,17 +1030,13 @@ public final class DualPivotQuicksort20210424 {
                     run = Arrays.copyOf(run, count << 1);
                 }
             }
-            if (false && TRACE) {
-                System.out.println("last: " + last + " k-1: "+(k-1));
-                System.out.println("a[last]: "+a[last] + " a[k-1]: "+a[k-1]);
-            }
             run[count] = (last = k);
-            
-            if (true) {
-                // fix ALMOST_CONTIGUOUS ie consecutive (ascending / descending runs)
-                if (k < high - 1) {
-                    k++; // LBO
-                }
+
+            if (++k == high) {
+                /*
+                 * There is a single-element run at the end.
+                 */
+                --k;
             }
         }
 
@@ -1049,15 +1052,14 @@ public final class DualPivotQuicksort20210424 {
                     prev = run[i];
                 }
             }
-            
             int[] b; int offset = low;
 
             // LBO: prealloc
             if (sorter == null || (b = sorter.b) == null || b.length < size) {
 //                System.out.println("alloc b: "+size);
                 b = new int[size];
-//            } else {
-//                offset = sorter.offset;
+            } else {
+                offset = sorter.offset;
             }
             mergeRuns(a, b, offset, 1, /*sorter != null,*/ run, 0, count);
         }
@@ -1187,8 +1189,8 @@ public final class DualPivotQuicksort20210424 {
         }
 
         void initBuffers(int length, int offset) {
-            if (b == null || b.length < length) {
-                b = new int[length];
+            if ((b == null) || (b.length < offset + length)) {
+                b = new int[offset + length]; // bug in radixSort2
             }
             this.runInit = true;
             this.offset = offset;
