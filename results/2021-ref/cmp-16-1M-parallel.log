@@ -1,0 +1,26 @@
+# Run complete. Total time: 00:05:46
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                              (bits)  (padding)          (scenario)  (seed)   (size)   Mode  Cnt     Score    Error  Units
+RadixSortBenchmark.parallelArraysSort      23          7             UNIFORM       0  1000000  thrpt    5    22,936 ±  6,626  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7            GAUSSIAN       0  1000000  thrpt    5    24,576 ±  0,501  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7          CONTIGUOUS       0  1000000  thrpt    5  1568,905 ± 96,613  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   779,611 ± 43,307  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5   128,497 ±  6,665  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7              SORTED       0  1000000  thrpt    5    38,053 ±  0,648  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7       ALMOST_SORTED       0  1000000  thrpt    5    37,401 ±  0,530  ops/s
+RadixSortBenchmark.parallelArraysSort      23          7                 EXP       0  1000000  thrpt    5    25,808 ±  0,306  ops/s
+
+RadixSortBenchmark.parallelDpqs21Ref       23          7             UNIFORM       0  1000000  thrpt    5    52,352 ±  1,153  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7            GAUSSIAN       0  1000000  thrpt    5    54,645 ±  1,443  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7          CONTIGUOUS       0  1000000  thrpt    5  2073,169 ± 19,994  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   777,157 ± 37,853  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5   867,565 ± 43,417  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7              SORTED       0  1000000  thrpt    5    35,376 ±  0,543  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7       ALMOST_SORTED       0  1000000  thrpt    5   104,948 ±  3,910  ops/s
+RadixSortBenchmark.parallelDpqs21Ref       23          7                 EXP       0  1000000  thrpt    5    59,308 ±  2,192  ops/s

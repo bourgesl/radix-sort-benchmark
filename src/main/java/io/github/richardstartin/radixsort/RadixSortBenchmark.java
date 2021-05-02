@@ -103,25 +103,25 @@ public class RadixSortBenchmark {
         return data;
     }
 
-    @Benchmark
+    /* @Benchmark */
     public int[] unrollOnePassSkipLevelsBufferWithDetection() {
         RadixSort.unrollOnePassHistogramsSkipLevels(data, buffer);
         return data;
     }
 
-    @Benchmark
+    /* @Benchmark */
     public int[] arraysSort() {
         Arrays.sort(data);
         return data;
     }
 
-    @Benchmark
+    /* @Benchmark */
     public int[] dpqs21Ref() {
         edu.sorting.ref.Arrays.sort(data);
         return data;
     }
 
-    @Benchmark
+    /* @Benchmark */
     public int[] dpqs11Sort() {
         DualPivotQuickSort2011.sortNoAlloc(data);
         return data;
@@ -133,7 +133,7 @@ public class RadixSortBenchmark {
         return data;
     }
 
-    @Benchmark
+    /* @Benchmark */
     public int[] dpqs2104NoAllocSort() {
         DualPivotQuicksort20210424.sortNoAlloc(data);
         return data;
@@ -142,6 +142,20 @@ public class RadixSortBenchmark {
     /* @Benchmark */
     public int[] dpqs2104RadixSort() {
         DualPivotQuicksort20210424.sortRadix(data);
+        return data;
+    }
+
+    // parallel
+    
+    @Benchmark
+    public int[] parallelArraysSort() {
+        Arrays.parallelSort(data);
+        return data;
+    }
+
+    @Benchmark
+    public int[] parallelDpqs21Ref() {
+        edu.sorting.ref.Arrays.parallelSort(data);
         return data;
     }
 

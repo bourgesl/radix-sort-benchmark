@@ -3,9 +3,9 @@
 java -version
 
 #SIZES="1000"
-SIZES="10000"
+#SIZES="10000"
 #SIZES="100000"
-#SIZES="1000000"
+SIZES="1000000"
 #SIZES="100000000"
 
 # TODO: longer runs for larger arrays: 100000000
@@ -15,7 +15,7 @@ GC=false
 FORK=1
 
 # min iter = 10 (to sample all distributions)
-WITER=3
+WITER=5
 WTIME=1s
 ITER=5
 TIME=1s
@@ -30,7 +30,7 @@ JAVA_OPTS="-Xms256m -Xmx256m"
 echo "JAVA_OPTS: $JAVA_OPTS"
 
 #FORK_OPTS="-Xms4g -Xmx4g -XX:+UseParallelGC -XX:-BackgroundCompilation"
-FORK_OPTS="-Xms1g -Xmx1g -XX:+UseParallelGC -XX:-BackgroundCompilation"
+FORK_OPTS="-Xms1g -Xmx1g -XX:+UseParallelGC -XX:-BackgroundCompilation -Djava.util.concurrent.ForkJoinPool.common.parallelism=4"
 echo "FORK_OPTS: $FORK_OPTS"
 
 echo "Running JMH ..." 
