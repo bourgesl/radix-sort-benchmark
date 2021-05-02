@@ -22,12 +22,6 @@ class RadixSortTest {
                 DualPivotQuicksort20210424.sortRadix(data);
             }
         },
-        DPQS_RADIX_2 {
-            @Override
-            void sort(int[] data) {
-                DualPivotQuicksort20210424.sortRadix2(data);
-            }
-        },
         DPQS {
             @Override
             void sort(int[] data) {

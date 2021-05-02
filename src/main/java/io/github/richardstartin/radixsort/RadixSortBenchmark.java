@@ -116,32 +116,32 @@ public class RadixSortBenchmark {
     }
 
     @Benchmark
+    public int[] dpqs21Ref() {
+        edu.sorting.ref.Arrays.sort(data);
+        return data;
+    }
+
+    @Benchmark
     public int[] dpqs11Sort() {
         DualPivotQuickSort2011.sortNoAlloc(data);
         return data;
     }
 
     /* @Benchmark */
-    public int[] dpqs21_04Sort() {
+    public int[] dpqs2104Sort() {
         DualPivotQuicksort20210424.sortStd(data);
         return data;
     }
 
     @Benchmark
-    public int[] dpqs21_04NoAllocSort() {
+    public int[] dpqs2104NoAllocSort() {
         DualPivotQuicksort20210424.sortNoAlloc(data);
         return data;
     }
 
-    @Benchmark
-    public int[] dpqs21_04RadixSort() {
+    /* @Benchmark */
+    public int[] dpqs2104RadixSort() {
         DualPivotQuicksort20210424.sortRadix(data);
-        return data;
-    }
-
-    @Benchmark
-    public int[] dpqs21_04RadixSort2() {
-        DualPivotQuicksort20210424.sortRadix2(data);
         return data;
     }
 

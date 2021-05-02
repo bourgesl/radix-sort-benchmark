@@ -38,12 +38,13 @@ public class TraceDPQS {
         final int[] data = scenario.generate(M, 0, (1 << bits) - 1);
         final int[] copy = Arrays.copyOf(data, M);
 
+        System.out.println("Test[" + scenario + " | " + impl + "] M=" + M + "----------------------------------------------------------");
+        
         if (true) {
             System.out.println("data[0-512]: " + Arrays.toString(Arrays.copyOfRange(data, 0, 512)));
             System.out.println("data[-100:0]: " + Arrays.toString(Arrays.copyOfRange(data, M - 100, M)));
         }
-
-        System.out.println("Test[" + scenario + " | " + impl + "] M=" + M + "----------------------------------------------------------");
+        
         System.arraycopy(data, 0, copy, 0, copy.length);
         impl.sort(data);
         Arrays.sort(copy);
@@ -93,12 +94,6 @@ public class TraceDPQS {
             @Override
             void sort(int[] data) {
                 DualPivotQuicksort20210424.sortRadix(data);
-            }
-        },
-        DPQS_RADIX_2 {
-            @Override
-            void sort(int[] data) {
-                DualPivotQuicksort20210424.sortRadix2(data);
             }
         },
         DPQS {
