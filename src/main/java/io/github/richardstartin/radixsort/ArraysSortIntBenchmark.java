@@ -2,6 +2,7 @@ package io.github.richardstartin.radixsort;
 
 import edu.sorting.DualPivotQuickSort2011;
 import edu.sorting.DualPivotQuicksort20210424;
+import edu.sorting.DualPivotQuicksort202105LowMem;
 import java.util.Arrays;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Level;
@@ -12,7 +13,9 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 @State(Scope.Benchmark)
-public class RadixSortBenchmark {
+public class ArraysSortIntBenchmark {
+
+    private final static boolean ALLOC_BUFFER = false;
 
     @Param({"1000000"})
     int size;
@@ -35,11 +38,12 @@ public class RadixSortBenchmark {
 
     @Setup(Level.Trial)
     public void setup() {
-        data = scenario.generate(size, seed, (1 << bits) - 1);
         byte[] paddingAllocation = new byte[padding];
+        data = scenario.generate(size, seed, (1 << bits) - 1);
+        paddingAllocation = new byte[padding];
         copy = Arrays.copyOf(data, data.length);
         paddingAllocation = new byte[padding];
-        buffer = new int[size];
+        buffer = (ALLOC_BUFFER) ? new int[size] : null;
     }
 
     @TearDown(Level.Invocation)
@@ -109,18 +113,24 @@ public class RadixSortBenchmark {
         return data;
     }
 
-    /* @Benchmark */
+    @Benchmark
     public int[] arraysSort() {
         Arrays.sort(data);
         return data;
     }
 
-    /* @Benchmark */
+    @Benchmark
     public int[] dpqs21Ref() {
         edu.sorting.ref.Arrays.sort(data);
         return data;
     }
 
+    /* @Benchmark */
+    public int[] dpqs21LowMem() {
+        DualPivotQuicksort202105LowMem.sortNoAlloc(data);
+        return data;
+    }
+    
     /* @Benchmark */
     public int[] dpqs11Sort() {
         DualPivotQuickSort2011.sortNoAlloc(data);
@@ -146,7 +156,6 @@ public class RadixSortBenchmark {
     }
 
     // parallel
-    
     @Benchmark
     public int[] parallelArraysSort() {
         Arrays.parallelSort(data);
