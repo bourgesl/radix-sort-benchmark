@@ -3,14 +3,14 @@ package io.github.richardstartin.radixsort;
 import java.util.Random;
 import java.util.SplittableRandom;
 
-public enum DataScenario {
+public enum LongDataScenario {
     UNIFORM {
         @Override
-        public int[] generate(int size, int seed, int mask) {
+        public long[] generate(int size, int seed, long mask) {
             SplittableRandom random = new SplittableRandom(seed);
-            int[] data = new int[size];
+            long[] data = new long[size];
             for (int i = 0; i < data.length; ++i) {
-                data[i] = random.nextInt() & mask;
+                data[i] = random.nextLong() & mask;
             }
             return data;
         }
@@ -18,9 +18,9 @@ public enum DataScenario {
     GAUSSIAN {
         // LBO: NEW
         @Override
-        public int[] generate(int size, int seed, int mask) {
+        public long[] generate(int size, int seed, long mask) {
             Random random = new Random(seed);
-            int[] data = new int[size];
+            long[] data = new long[size];
 
             final int max = size;
             final double avg = max / 2.0;
@@ -39,8 +39,8 @@ public enum DataScenario {
     },
     CONTIGUOUS {
         @Override
-        public int[] generate(int size, int seed, int mask) {
-            int[] data = new int[size];
+        public long[] generate(int size, int seed, long mask) {
+            long[] data = new long[size];
             for (int i = 0; i < data.length; ++i) {
                 data[i] = i & mask;
             }
@@ -49,8 +49,8 @@ public enum DataScenario {
     },
     CONTIGUOUS_REVERSE {
         @Override
-        public int[] generate(int size, int seed, int mask) {
-            int[] data = new int[size];
+        public long[] generate(int size, int seed, long mask) {
+            long[] data = new long[size];
             for (int i = 0; i < size; ++i) {
                 data[i] = size - i;
             }
@@ -59,8 +59,8 @@ public enum DataScenario {
     },
     ALMOST_CONTIGUOUS {
         @Override
-        public int[] generate(int size, int seed, int mask) {
-            int[] data = new int[size];
+        public long[] generate(int size, int seed, long mask) {
+            long[] data = new long[size];
             for (int i = 0; i < data.length; ++i) {
                 data[i] = (i ^ 0xFF) & mask;
             }
@@ -69,42 +69,42 @@ public enum DataScenario {
     },
     SORTED {
         @Override
-        public int[] generate(int size, int seed, int mask) {
+        public long[] generate(int size, int seed, long mask) {
             SplittableRandom random = new SplittableRandom(seed);
-            int[] data = new int[size];
-            int x = (int) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
+            long[] data = new long[size];
+            long x = (long) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
             for (int i = 0; i < size; ++i) {
                 data[i] = x & mask;
-                x += (int) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
+                x += (long) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
             }
             return data;
         }
     },
     ALMOST_SORTED {
         @Override
-        public int[] generate(int size, int seed, int mask) {
-            int[] data = new int[size];
+        public long[] generate(int size, int seed, long mask) {
+            long[] data = new long[size];
             SplittableRandom random = new SplittableRandom(seed);
-            int x = (int) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
+            long x = (long) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
             for (int i = 0; i < size; ++i) {
                 data[i] = (x ^ 0xFF) & mask;
-                x += (int) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
+                x += (long) (Math.log(random.nextDouble()) / Math.log(0.999)) + 1;
             }
             return data;
         }
     },
     EXP {
         @Override
-        public int[] generate(int size, int seed, int mask) {
+        public long[] generate(int size, int seed, long mask) {
             SplittableRandom random = new SplittableRandom(seed);
-            int[] data = new int[size];
+            long[] data = new long[size];
             for (int i = 0; i < data.length; ++i) {
-                int x = (int) (Math.log(random.nextDouble()) / Math.log(0.9999)) + 1;
+                long x = (long) (Math.log(random.nextDouble()) / Math.log(0.9999)) + 1;
                 data[i] = x & mask;
             }
             return data;
         }
-    };
+    },;
 
-    public abstract int[] generate(int size, int seed, int mask);
+    public abstract long[] generate(int size, int seed, long mask);
 }
