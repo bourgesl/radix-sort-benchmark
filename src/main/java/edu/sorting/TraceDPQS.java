@@ -13,13 +13,13 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class TraceDPQS {
 
-    private final static int M = (1 << 30) / 32; // 1024 10^6 ints = 4Gb (per array)
+    private final static int M = (1 << 29); // 512 10^6 ints = 2Gb (per array)
     private final static int N = 1;
 
     private final static int bits = 31;
 
     private final static boolean TRACE_TIME = true;
-    private final static boolean TEST_PARALLEL = false;
+    private final static boolean TEST_PARALLEL = true;
 
     public static void main(String[] args) {
         System.out.println("ForkJoinPool.getCommonPoolParallelism(): " + ForkJoinPool.getCommonPoolParallelism());
@@ -38,8 +38,10 @@ public class TraceDPQS {
             test(data, Impl.DPQS_2105, Impl.SYSTEM);
         }
 
-        for (DataScenario data : scenarios) {
-            test(data, Impl.DPQS_2105_LowMem, Impl.SYSTEM);
+        if (false) {
+            for (DataScenario data : scenarios) {
+                test(data, Impl.DPQS_2105_LowMem, Impl.SYSTEM);
+            }
         }
 
         if (TEST_PARALLEL) {
@@ -65,24 +67,42 @@ public class TraceDPQS {
 
             System.out.println("Test[" + scenario + " | " + impl + "| M=" + M + "] ---------------------------------------------------------------------");
 
+            boolean test;
             long start = System.nanoTime();
 
-            impl.sort(data);
+            try {
+                impl.sort(data);
+                test = true;
+            } catch (OutOfMemoryError oome) {
+                System.err.println("Test[" + scenario + " | " + impl + "| M=" + M + "] failed (OOME)");
+                oome.printStackTrace(System.err);
+                test = false;
+            }
 
             final long elapsed = System.nanoTime() - start;
 
             System.out.println("Test[" + scenario + " | " + implRef + "| M=" + M + "] ------------------------------------------------------------------------");
 
+            boolean ref;
             start = System.nanoTime();
 
-            implRef.sort(copy);
+            try {
+                implRef.sort(copy);
+                ref = true;
+            } catch (OutOfMemoryError oome) {
+                System.err.println("Test[" + scenario + " | " + implRef + "| M=" + M + "] failed (OOME)");
+                oome.printStackTrace(System.err);
+                ref = false;
+            }
 
             final long elapsed_std = System.nanoTime() - start;
 
-            if (Arrays.equals(data, copy)) {
+            if (!test || !ref || Arrays.equals(data, copy)) {
                 // OK
                 if (TRACE_TIME) {
-                    System.out.println("Test[" + scenario + " | " + impl + "| M=" + M + "] elapsed: " + (elapsed * 1e-6) + " ms, reference: " + (elapsed_std * 1e-6) + " ms");
+                    System.out.println("Test[" + scenario + " | " + impl + "| M=" + M + "] elapsed: "
+                            + ((test) ? ((elapsed * 1e-6) + " ms") : "OOME")
+                            + " ms, reference: " + ((ref) ? ((elapsed_std * 1e-6) + " ms") : "OOME"));
                 }
             } else {
                 for (int j = 0; j < M; j++) {

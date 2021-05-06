@@ -60,34 +60,6 @@ public class TraceDPQSLong {
         }
     }
 
-    public static void testRandom(Impl impl) {
-        final long[] data = new long[M];
-        final long[] copy = new long[M];
-
-        System.out.println("Test[" + impl + "] M=" + M + "----------------------------------------------------------");
-        fillRandom(data);
-        System.arraycopy(data, 0, copy, 0, copy.length);
-        impl.sort(data);
-        Arrays.sort(copy);
-
-        if (!Arrays.equals(data, copy)) {
-            for (int j = 0; j < M; j++) {
-                if (data[j] != copy[j]) {
-                    System.out.println("Mismatch[" + j + "]: " + data[j] + " != " + copy[j]);
-                }
-            }
-            System.out.flush();
-            throw new IllegalStateException("Bad sort : " + impl);
-        }
-    }
-
-    private static void fillRandom(long[] data) {
-        for (int i = 0; i < data.length; ++i) {
-            // data[i] = ThreadLocalRandom.current().nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE);
-            data[i] = ThreadLocalRandom.current().nextInt(0, data.length);
-        }
-    }
-
     enum Impl {
         DPQS_2105 {
             @Override
