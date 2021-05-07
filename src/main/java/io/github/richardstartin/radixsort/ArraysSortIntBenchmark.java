@@ -120,7 +120,7 @@ public class ArraysSortIntBenchmark {
     }
 
     @Benchmark
-    public int[] dpqs21Ref() {
+    public int[] dpqs2105Ref() {
         edu.sorting.ref.Arrays.sort(data);
         return data;
     }
@@ -163,7 +163,7 @@ public class ArraysSortIntBenchmark {
     }
 
     @Benchmark
-    public int[] parallelDpqs21Ref() {
+    public int[] parallelDpqs2105Ref() {
         edu.sorting.ref.Arrays.parallelSort(data);
         return data;
     }

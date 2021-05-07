@@ -50,7 +50,7 @@ public class ArraysSortLongBenchmark {
     }
 
     @Benchmark
-    public long[] dpqs21Ref() {
+    public long[] dpqs2105Ref() {
         edu.sorting.ref.Arrays.sort(data);
         return data;
     }
@@ -63,7 +63,7 @@ public class ArraysSortLongBenchmark {
     }
 
     @Benchmark
-    public long[] parallelDpqs21Ref() {
+    public long[] parallelDpqs2105Ref() {
         edu.sorting.ref.Arrays.parallelSort(data);
         return data;
     }

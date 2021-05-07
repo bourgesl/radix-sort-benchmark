@@ -50,12 +50,12 @@ import java.util.concurrent.RecursiveTask;
  * @since 1.7 * 14 & 17
  */
 /* Vladimir's version: final DualPivotQuicksort_6K_B.java */
-final class DualPivotQuicksortRef2105 {
+final class DualPivotQuicksortRef2105LBO {
 
     /**
      * Prevents instantiation.
      */
-    private DualPivotQuicksortRef2105() {}
+    private DualPivotQuicksortRef2105LBO() {}
 
     /**
      * Max array size to use mixed insertion sort.
@@ -284,6 +284,25 @@ final class DualPivotQuicksortRef2105 {
              * Partitioning with two pivots in case of different elements.
              */
             if (a[e1] < a[e2] && a[e2] < a[e3] && a[e3] < a[e4] && a[e4] < a[e5]) {
+
+                if (false) {
+                    // Challenge: debug heuristic to estimate if almost sorted vs random data:
+                    if (true || bits == 0) {
+                        System.out.println("Challenge: ");
+                        System.out.println("1: [" + e1 + "] = [" + a[e1] + "]");
+                        System.out.println("2: [" + e2 + "] = [" + a[e2] + "]");
+                        System.out.println("3: [" + e3 + "] = [" + a[e3] + "]");
+                        System.out.println("4: [" + e4 + "] = [" + a[e4] + "]");
+                        System.out.println("5: [" + e5 + "] = [" + a[e5] + "]");
+
+                        System.out.println("5-1:  = [" + (a[e5] - a[e1]) + "]");
+
+                        System.out.println("1-2:  = [" + (a[e2] - a[e1]) + "]");
+                        System.out.println("2-3:  = [" + (a[e3] - a[e2]) + "]");
+                        System.out.println("3-4:  = [" + (a[e4] - a[e3]) + "]");
+                        System.out.println("4-5:  = [" + (a[e5] - a[e4]) + "]");
+                    }
+                }
                 
                 /*
                  * Invoke radix sort on large array.
@@ -870,6 +889,34 @@ final class DualPivotQuicksortRef2105 {
          * Merge runs of highly structured array.
          */
         if (count > 1) {
+            if (true) {
+                System.out.println("Merge runs:");
+                int prev = run[0];
+                for (int i = 1, end; i <= count; i++) {
+                    end = run[i] - 1;
+                    System.out.println("run " + i + " in [" + prev + " - " + end + "] <=> [" + a[prev] + " - " + a[end] + "]");
+                    prev = run[i];
+                }
+            }
+            
+            if (true) {
+                // cost Merge A(n), B(m) = O(n + m)
+                long cost = 0L;
+                for (int i = 1; i <= count; i++) {
+                    cost += run[i] - run[i - 1];
+                    System.out.println("run " + i + " in [" + run[i - 1] + " - " + run[i] + "]");
+                }
+                System.out.println("cost: " + cost + " ratio: " + cost / size);
+            }
+            
+            /*
+            TODO: estimate cost of complex merge sort (large runs with large overlap => max cost !)
+            */
+            if (false) {
+                // disable merge
+                return false;
+            }
+            
             int[] b; int offset = low;
 
             if (sorter == null || (b = (int[]) sorter.b) == null) {
@@ -1021,6 +1068,16 @@ final class DualPivotQuicksortRef2105 {
         /*
          * Merge small parts sequentially.
          */
+        if (true) {
+            System.out.println("---------------------------------------");        
+            System.out.println("  [lo1-hi1]: " + lo1 + " - "+(hi1-1));        
+            System.out.println("a1[lo1-hi1]: " + a1[lo1] + " - "+a1[hi1-1]);        
+            System.out.println("[lo2-hi2]: " + lo2 + " - "+(hi2-1));        
+            System.out.println("a2[lo2-hi2]: " + a2[lo2] + " - "+a2[hi2-1]);        
+            long cost = (hi1 - lo1) + (hi2 - lo2);
+            System.out.println("Mcost: " + cost);        
+        }
+        
         while (lo1 < hi1 && lo2 < hi2) {
             dst[k++] = a1[lo1] < a2[lo2] ? a1[lo1++] : a2[lo2++];
         }
