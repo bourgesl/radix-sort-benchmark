@@ -3,6 +3,7 @@
  ******************************************************************************/
 package edu.sorting;
 
+import edu.sorting.util.WelfordVariance;
 import io.github.richardstartin.radixsort.DataScenario;
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
@@ -64,6 +65,30 @@ public class TestDPQS {
             if (true) {
                 System.out.println("data[0 : 100]: " + Arrays.toString(Arrays.copyOfRange(data, 0, 100)));
                 System.out.println("data[-100 : 0]: " + Arrays.toString(Arrays.copyOfRange(data, M - 100, M)));
+
+                // Stats:
+                final WelfordVariance stats = new WelfordVariance();
+                final WelfordVariance statsDelta = new WelfordVariance();
+
+                final long start = System.nanoTime();
+
+                for (int j = 0; j < data.length; j++) {
+                    stats.add(data[j]);
+                }
+
+                for (int j = 1; j < data.length; j++) {
+                    statsDelta.add(data[j] - data[j - 1]); // delta = V(i) - V(i-1)
+                }
+
+                System.out.println("Test[" + scenario + "] stats elapsed: " + (1e-6 * (System.nanoTime() - start)) + " ms");
+                System.out.println("Test[" + scenario + "] stats: " + stats.toString());
+                System.out.println("Test[" + scenario + "] statsDelta: " + statsDelta.toString());
+                
+                /*
+Test[SORTED] stats elapsed: 37.764829 ms
+Test[SORTED] stats: [2000000: µ=6.674691370463236E7 σ=3.8540604537873566E7 (57.741403158238874 %) rms=1.0528751824250592E8 min=125.0 max=1.34217662E8 sum=1.3349382740926472E14]
+Test[SORTED] statsDelta: [1999999: µ=60.0227560113793 σ=355103.74505215697 (591615.1950517489 %) rms=355163.76780816837 min=-1.34216964E8 max=14675.0 sum=1.200454520000026E8]
+                */
             }
 
             System.arraycopy(data, 0, copy, 0, copy.length);

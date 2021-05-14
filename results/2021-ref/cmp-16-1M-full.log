@@ -1,0 +1,63 @@
+# Run complete. Total time: 00:17:00
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+Benchmark                                                          (bits)  (padding)          (scenario)  (seed)   (size)   Mode  Cnt     Score    Error  Units
+ArraysSortIntBenchmark.arraysSort                                      23          7             UNIFORM       0  1000000  thrpt    5    11,984 ±  0,171  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7            GAUSSIAN       0  1000000  thrpt    5    12,241 ±  0,134  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7          CONTIGUOUS       0  1000000  thrpt    5  2730,078 ± 35,631  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5  1076,431 ± 10,333  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    81,322 ±  2,876  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7              SORTED       0  1000000  thrpt    5    22,196 ±  0,247  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7       ALMOST_SORTED       0  1000000  thrpt    5    17,776 ±  0,104  ops/s
+ArraysSortIntBenchmark.arraysSort                                      23          7                 EXP       0  1000000  thrpt    5    13,889 ±  0,101  ops/s
+
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7             UNIFORM       0  1000000  thrpt    5   106,231 ±  0,671  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7            GAUSSIAN       0  1000000  thrpt    5   106,049 ±  1,099  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7          CONTIGUOUS       0  1000000  thrpt    5  2726,740 ± 22,976  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   966,661 ± 13,276  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5  1173,618 ± 16,518  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7              SORTED       0  1000000  thrpt    5    22,452 ±  0,187  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7       ALMOST_SORTED       0  1000000  thrpt    5   106,174 ±  1,203  ops/s
+ArraysSortIntBenchmark.dpqs2105Ref                                     23          7                 EXP       0  1000000  thrpt    5   100,144 ±  2,557  ops/s
+
+ArraysSortIntBenchmark.dpqs2105New                                     23          7             UNIFORM       0  1000000  thrpt    5   108,477 ±  0,362  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7            GAUSSIAN       0  1000000  thrpt    5   108,236 ±  1,977  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7          CONTIGUOUS       0  1000000  thrpt    5  1410,614 ± 25,200  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5   730,213 ± 13,912  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5   837,930 ± 15,097  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7              SORTED       0  1000000  thrpt    5    23,063 ±  0,342  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7       ALMOST_SORTED       0  1000000  thrpt    5   108,280 ±  1,312  ops/s
+ArraysSortIntBenchmark.dpqs2105New                                     23          7                 EXP       0  1000000  thrpt    5   105,391 ±  0,682  ops/s
+
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7             UNIFORM       0  1000000  thrpt    5   108,239 ±  1,249  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7            GAUSSIAN       0  1000000  thrpt    5   108,431 ±  0,458  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7          CONTIGUOUS       0  1000000  thrpt    5    33,450 ±  0,095  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5    32,943 ±  0,078  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    33,159 ±  0,261  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7              SORTED       0  1000000  thrpt    5   107,877 ±  0,989  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7       ALMOST_SORTED       0  1000000  thrpt    5   108,365 ±  1,147  ops/s
+ArraysSortIntBenchmark.dpqs2105Radix                                   23          7                 EXP       0  1000000  thrpt    5   101,357 ±  0,212  ops/s
+
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7             UNIFORM       0  1000000  thrpt    5   112,018 ±  0,213  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7            GAUSSIAN       0  1000000  thrpt    5   112,118 ±  0,861  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7          CONTIGUOUS       0  1000000  thrpt    5    33,291 ±  0,095  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5    33,569 ±  0,138  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    33,454 ±  0,280  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7              SORTED       0  1000000  thrpt    5   111,634 ±  0,837  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7       ALMOST_SORTED       0  1000000  thrpt    5   105,489 ±  0,949  ops/s
+ArraysSortIntBenchmark.dpqs2105RadixNew                                23          7                 EXP       0  1000000  thrpt    5   108,374 ±  0,932  ops/s
+
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7             UNIFORM       0  1000000  thrpt    5   108,290 ±  4,253  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7            GAUSSIAN       0  1000000  thrpt    5   109,169 ±  1,937  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7          CONTIGUOUS       0  1000000  thrpt    5    32,915 ±  0,378  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7  CONTIGUOUS_REVERSE       0  1000000  thrpt    5    32,738 ±  0,570  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7   ALMOST_CONTIGUOUS       0  1000000  thrpt    5    33,205 ±  0,266  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7              SORTED       0  1000000  thrpt    5   109,170 ±  2,849  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7       ALMOST_SORTED       0  1000000  thrpt    5   109,050 ±  2,478  ops/s
+ArraysSortIntBenchmark.unrollOnePassSkipLevelsBufferWithDetection      23          7                 EXP       0  1000000  thrpt    5    99,545 ±  2,223  ops/s
+
